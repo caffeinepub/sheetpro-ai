@@ -24,13 +24,14 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
   const {
     selectedCell,
     getCell,
-    updateCellFormat,
+    updateRangeFormat,
     undo,
     redo,
     canUndo,
     canRedo,
   } = spreadsheet;
 
+  // Read format state from anchor/selected cell
   const cell = selectedCell
     ? getCell(selectedCell.row, selectedCell.col)
     : null;
@@ -41,6 +42,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
   const align = cell?.align || "left";
   const fontSize = cell?.fontSize || 12;
   const color = cell?.color || "#000000";
+  const bgColor = cell?.bgColor || "#ffffff";
 
   return (
     <div
@@ -86,7 +88,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
       <select
         value={fontSize}
         onChange={(e) =>
-          updateCellFormat({ fontSize: Number.parseInt(e.target.value) })
+          updateRangeFormat({ fontSize: Number.parseInt(e.target.value) })
         }
         className="h-6 text-xs border border-border rounded px-1 outline-none focus:border-ring"
         style={{ width: 52 }}
@@ -106,7 +108,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
       <button
         type="button"
         className={`toolbar-btn font-bold${isBold ? " active" : ""}`}
-        onClick={() => updateCellFormat({ bold: !isBold })}
+        onClick={() => updateRangeFormat({ bold: !isBold })}
         title="Bold (Ctrl+B)"
         data-ocid="toolbar.bold.toggle"
       >
@@ -115,7 +117,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
       <button
         type="button"
         className={`toolbar-btn${isItalic ? " active" : ""}`}
-        onClick={() => updateCellFormat({ italic: !isItalic })}
+        onClick={() => updateRangeFormat({ italic: !isItalic })}
         title="Italic (Ctrl+I)"
         data-ocid="toolbar.italic.toggle"
       >
@@ -124,7 +126,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
       <button
         type="button"
         className={`toolbar-btn${isUnderline ? " active" : ""}`}
-        onClick={() => updateCellFormat({ underline: !isUnderline })}
+        onClick={() => updateRangeFormat({ underline: !isUnderline })}
         title="Underline (Ctrl+U)"
         data-ocid="toolbar.underline.toggle"
       >
@@ -141,7 +143,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
         <input
           type="color"
           value={color}
-          onChange={(e) => updateCellFormat({ color: e.target.value })}
+          onChange={(e) => updateRangeFormat({ color: e.target.value })}
           className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
           style={{ width: 26, height: 26 }}
           title="Text color"
@@ -153,13 +155,46 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
         />
       </div>
 
+      {/* Fill / Background color */}
+      <div className="relative flex flex-col items-center" title="Fill color">
+        <span
+          className="text-xs font-bold leading-none"
+          style={{
+            background: bgColor === "#ffffff" ? "transparent" : bgColor,
+            color: bgColor === "#ffffff" ? "#374151" : "transparent",
+            width: 14,
+            height: 14,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1px solid #ccc",
+            borderRadius: 2,
+          }}
+        >
+          &nbsp;
+        </span>
+        <input
+          type="color"
+          value={bgColor}
+          onChange={(e) => updateRangeFormat({ bgColor: e.target.value })}
+          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+          style={{ width: 26, height: 26 }}
+          title="Fill color"
+          data-ocid="toolbar.fill_color.input"
+        />
+        <div
+          className="w-4 h-1 rounded-sm mt-px"
+          style={{ background: bgColor === "#ffffff" ? "#e5e7eb" : bgColor }}
+        />
+      </div>
+
       <div className="w-px h-5 bg-border mx-1" />
 
       {/* Alignment */}
       <button
         type="button"
         className={`toolbar-btn${align === "left" ? " active" : ""}`}
-        onClick={() => updateCellFormat({ align: "left" })}
+        onClick={() => updateRangeFormat({ align: "left" })}
         title="Align left"
         data-ocid="toolbar.align_left.toggle"
       >
@@ -168,7 +203,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
       <button
         type="button"
         className={`toolbar-btn${align === "center" ? " active" : ""}`}
-        onClick={() => updateCellFormat({ align: "center" })}
+        onClick={() => updateRangeFormat({ align: "center" })}
         title="Align center"
         data-ocid="toolbar.align_center.toggle"
       >
@@ -177,7 +212,7 @@ export default function Toolbar({ spreadsheet, onToggleAI, aiOpen }: Props) {
       <button
         type="button"
         className={`toolbar-btn${align === "right" ? " active" : ""}`}
-        onClick={() => updateCellFormat({ align: "right" })}
+        onClick={() => updateRangeFormat({ align: "right" })}
         title="Align right"
         data-ocid="toolbar.align_right.toggle"
       >

@@ -6,12 +6,31 @@ interface Props {
   spreadsheet: SpreadsheetHook;
 }
 
-export default function FormulaBar({ spreadsheet }: Props) {
-  const { selectedCell, getCell, setCell } = spreadsheet;
+function rangeToAddress(
+  r1: number,
+  c1: number,
+  r2: number,
+  c2: number,
+): string {
+  const topLeft = `${indexToColLetter(c1)}${r1 + 1}`;
+  const bottomRight = `${indexToColLetter(c2)}${r2 + 1}`;
+  if (topLeft === bottomRight) return topLeft;
+  return `${topLeft}:${bottomRight}`;
+}
 
-  const cellAddress = selectedCell
-    ? `${indexToColLetter(selectedCell.col)}${selectedCell.row + 1}`
-    : "";
+export default function FormulaBar({ spreadsheet }: Props) {
+  const { selectedCell, selectionRange, getRangeNormalized, getCell, setCell } =
+    spreadsheet;
+
+  const cellAddress = (() => {
+    if (selectionRange) {
+      const { r1, c1, r2, c2 } = getRangeNormalized();
+      return rangeToAddress(r1, c1, r2, c2);
+    }
+    if (selectedCell)
+      return `${indexToColLetter(selectedCell.col)}${selectedCell.row + 1}`;
+    return "";
+  })();
 
   const cellData = selectedCell
     ? getCell(selectedCell.row, selectedCell.col)
@@ -22,9 +41,7 @@ export default function FormulaBar({ spreadsheet }: Props) {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    if (!isEditing) {
-      setInputVal(rawValue);
-    }
+    if (!isEditing) setInputVal(rawValue);
   }, [rawValue, isEditing]);
 
   const handleCommit = () => {
@@ -39,9 +56,8 @@ export default function FormulaBar({ spreadsheet }: Props) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleCommit();
-    } else if (e.key === "Escape") {
+    if (e.key === "Enter") handleCommit();
+    else if (e.key === "Escape") {
       setInputVal(rawValue);
       setIsEditing(false);
     }
@@ -49,7 +65,6 @@ export default function FormulaBar({ spreadsheet }: Props) {
 
   return (
     <div className="formula-bar" data-ocid="formulabar.panel">
-      {/* Name box */}
       <input
         className="name-box"
         value={cellAddress}
@@ -58,19 +73,13 @@ export default function FormulaBar({ spreadsheet }: Props) {
         data-ocid="formulabar.cell_address.input"
         aria-label="Cell address"
       />
-
-      {/* Divider */}
       <div className="w-px h-4 bg-border flex-shrink-0" />
-
-      {/* fx label */}
       <span
         className="text-xs text-muted-foreground font-mono font-semibold px-1 flex-shrink-0"
         style={{ color: "#5a6a7a" }}
       >
         fx
       </span>
-
-      {/* Formula / value input */}
       <input
         className="formula-input"
         value={inputVal}

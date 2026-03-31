@@ -130,6 +130,74 @@
   font-family: "Inter", sans-serif;
 }
 
+/* Phase 2: Range selection */
+.grid-cell.in-range {
+  background-color: rgba(26, 115, 232, 0.1);
+}
+
+/* Preserve bgColor when in-range */
+.grid-cell.in-range[style*="background-color"] {
+  /* Cell's own bgColor takes precedence via inline style */
+}
+
+/* Phase 2: Fill ghost */
+.grid-cell.in-fill-ghost {
+  background-color: rgba(26, 115, 232, 0.06);
+}
+
+/* Phase 2: Selection overlay */
+.selection-overlay {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #1a73e8;
+  z-index: 5;
+  box-sizing: border-box;
+}
+
+/* Phase 2: Fill ghost overlay */
+.fill-ghost-overlay {
+  position: absolute;
+  pointer-events: none;
+  border: 1px dashed #1a73e8;
+  background: rgba(26, 115, 232, 0.06);
+  z-index: 4;
+  box-sizing: border-box;
+}
+
+/* Phase 2: Fill handle */
+.fill-handle-wrapper {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+  z-index: 15;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+}
+
+.fill-handle {
+  width: 6px;
+  height: 6px;
+  background: #1a73e8;
+  border: 1px solid #fff;
+  box-shadow: 0 0 0 1px #1a73e8;
+  pointer-events: none;
+}
+
+/* Column/row header highlight when selected */
+.col-header.col-selected {
+  background: #d2e3fc;
+  color: #1a73e8;
+}
+
+.row-number.row-selected {
+  background: #d2e3fc;
+  color: #1a73e8;
+}
+
 .col-header {
   height: 28px;
   min-width: 100px;
@@ -259,13 +327,13 @@
 }
 
 .name-box {
-  width: 64px;
-  min-width: 64px;
+  width: 72px;
+  min-width: 72px;
   height: 22px;
   border: 1px solid #d0d9e4;
   border-radius: 2px;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   font-family: "Inter", sans-serif;
   padding: 0 4px;
   outline: none;
@@ -288,4 +356,48 @@
 
 .formula-input:focus {
   border-color: #1a73e8;
+}
+
+/* Phase 2: Context menu */
+.context-menu {
+  position: fixed;
+  background: #fff;
+  border: 1px solid #d0d9e4;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  min-width: 160px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.ctx-item {
+  display: block;
+  width: 100%;
+  padding: 7px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1a2b3c;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ctx-item:hover {
+  background: #f0f4f9;
+}
+
+.ctx-item.ctx-danger {
+  color: #dc2626;
+}
+
+.ctx-item.ctx-danger:hover {
+  background: #fef2f2;
+}
+
+.ctx-divider {
+  height: 1px;
+  background: #e7edf3;
+  margin: 3px 0;
 }
