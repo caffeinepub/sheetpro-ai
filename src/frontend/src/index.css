@@ -7,7 +7,6 @@
 @layer base {
   :root {
     --radius: 0.375rem;
-    /* SheetPro AI theme - deep navy + white */
     --background: 1 0 0;
     --foreground: 0.12 0.02 240;
     --card: 1 0 0;
@@ -41,12 +40,8 @@
     --sidebar-border: 0.922 0 0;
     --sidebar-ring: 0.708 0 0;
     /* SheetPro custom */
-    --sheet-header-from: #0e2235;
-    --sheet-header-to: #142f45;
     --sheet-grid-border: #e7edf3;
     --sheet-col-header-bg: #f3f6f9;
-    --sheet-ai-bg: #0e2235;
-    --sheet-chat-bubble: #eef4fa;
     --sheet-selected: #1a73e8;
   }
 
@@ -55,14 +50,262 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", sans-serif;
+    font-family: "Segoe UI", "Inter", sans-serif;
   }
 }
 
-/* SheetPro Header */
-.sheetpro-header {
-  background: linear-gradient(135deg, #0e2235 0%, #142f45 100%);
+/* ── Title Bar ── */
+.titlebar-qat-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.titlebar-qat-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.titlebar-qat-btn:disabled {
+  cursor: default;
+}
+
+.win-ctrl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: background 0.12s;
   flex-shrink: 0;
+}
+.win-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.win-close-btn:hover {
+  background: #c42b1c !important;
+  color: #fff;
+}
+
+/* ── Ribbon Tab Strip ── */
+.ribbon-tabs-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ribbon-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.ribbon-tab {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  height: 26px;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.88);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+  border-radius: 2px 2px 0 0;
+  letter-spacing: 0.01em;
+  font-family: "Segoe UI", Inter, sans-serif;
+  flex-shrink: 0;
+}
+.ribbon-tab:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.ribbon-tab.active {
+  background: #f0f0f0;
+  color: #217346;
+  font-weight: 600;
+  position: relative;
+  bottom: 0;
+  border-top: 2px solid #217346;
+}
+
+/* ── Ribbon Content Panel ── */
+.ribbon-panel {
+  background: #f0f0f0;
+  border-bottom: 1px solid #c8c8c8;
+  min-height: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  padding: 0 4px;
+}
+
+.ribbon-content-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  width: 100%;
+}
+.ribbon-content-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ribbon group */
+.ribbon-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 3px 4px 0 4px;
+  min-width: fit-content;
+  flex-shrink: 0;
+}
+.ribbon-group-content {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+.ribbon-group-label {
+  font-size: 9px;
+  color: #666;
+  text-align: center;
+  margin-top: 2px;
+  padding-bottom: 2px;
+  white-space: nowrap;
+  font-family: "Segoe UI", Inter, sans-serif;
+}
+
+.ribbon-divider {
+  width: 1px;
+  background: #c8c8c8;
+  margin: 4px 2px;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+.ribbon-divider-v {
+  width: 1px;
+  height: 16px;
+  background: #c8c8c8;
+  margin: 0 1px;
+  flex-shrink: 0;
+}
+
+/* Ribbon main button (icon + label stacked) */
+.ribbon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 52px;
+  padding: 2px 5px 0 5px;
+  border-radius: 2px;
+  border: none;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.1s;
+  font-family: "Segoe UI", Inter, sans-serif;
+  flex-shrink: 0;
+}
+.ribbon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+.ribbon-btn.active {
+  background: #c5d8f0;
+}
+.ribbon-btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+  pointer-events: none;
+}
+.ribbon-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+.ribbon-btn-label {
+  font-size: 9px;
+  font-weight: 400;
+  color: #1a1a1a;
+  text-align: center;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* Ribbon small button (icon only inline) */
+.ribbon-btn-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  border: none;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.1s;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.ribbon-btn-small:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+.ribbon-btn-small.active {
+  background: #c5d8f0;
+}
+
+/* Ribbon format button (small, inline, no label) */
+.ribbon-fmt-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  border: none;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.1s;
+  font-family: "Segoe UI", Inter, sans-serif;
+  flex-shrink: 0;
+}
+.ribbon-fmt-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #b8b8b8;
+}
+.ribbon-fmt-btn.active {
+  background: #c5d8f0;
+  border: 1px solid #7db5ea;
+}
+
+/* Ribbon select */
+.ribbon-select {
+  height: 20px;
+  font-size: 11px;
+  border: 1px solid #c8c8c8;
+  border-radius: 2px;
+  background: #fff;
+  padding: 0 3px;
+  outline: none;
+  font-family: "Segoe UI", Inter, sans-serif;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+.ribbon-select:focus {
+  border-color: #217346;
 }
 
 /* Hide scrollbar utility */
@@ -127,17 +370,12 @@
   border: none;
   outline: none;
   background: #fff;
-  font-family: "Inter", sans-serif;
+  font-family: "Segoe UI", "Inter", sans-serif;
 }
 
 /* Phase 2: Range selection */
 .grid-cell.in-range {
   background-color: rgba(26, 115, 232, 0.1);
-}
-
-/* Preserve bgColor when in-range */
-.grid-cell.in-range[style*="background-color"] {
-  /* Cell's own bgColor takes precedence via inline style */
 }
 
 /* Phase 2: Fill ghost */
@@ -284,12 +522,12 @@
   border-radius: 12px 12px 2px 12px;
 }
 .chat-bubble-ai {
-  background: var(--sheet-chat-bubble);
+  background: #eef4fa;
   color: #1a2b3c;
   border-radius: 12px 12px 12px 2px;
 }
 
-/* Toolbar button */
+/* Toolbar button (legacy - kept for compatibility) */
 .toolbar-btn {
   display: flex;
   align-items: center;
@@ -334,7 +572,7 @@
   border-radius: 2px;
   text-align: center;
   font-size: 11px;
-  font-family: "Inter", sans-serif;
+  font-family: "Segoe UI", "Inter", sans-serif;
   padding: 0 4px;
   outline: none;
 }
@@ -349,7 +587,7 @@
   border: 1px solid #d0d9e4;
   border-radius: 2px;
   font-size: 12px;
-  font-family: "Inter", sans-serif;
+  font-family: "Segoe UI", "Inter", sans-serif;
   padding: 0 6px;
   outline: none;
 }

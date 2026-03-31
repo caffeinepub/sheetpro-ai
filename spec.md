@@ -1,64 +1,36 @@
-# SheetPro AI - Phase 2
+# SheetPro AI — Phase 3: Real Excel UI (Title Bar + Ribbon + Formula Bar)
 
 ## Current State
-Phase 1 is complete: grid with single-cell selection, basic formula engine, cell editing, formatting (bold/italic/underline/align/color/font-size), multi-sheet tabs, AI panel shell, undo/redo, formula bar, mobile bottom toolbar.
-
-Key files:
-- `src/frontend/src/hooks/useSpreadsheet.ts` - state management, `selectedCell`, `setSelectedCell`, `updateCellFormat` (single cell)
-- `src/frontend/src/components/Grid.tsx` - renders grid, handles keyboard/mouse for single cell
-- `src/frontend/src/components/Toolbar.tsx` - formatting buttons acting on single selected cell
-- `src/frontend/src/components/FormulaBar.tsx` - name box shows single cell address
+- Header: dark navy bar with logo, hamburger menu (mobile), flat nav links (desktop)
+- Toolbar: flat single-row buttons (toggle hidden on mobile, shown on desktop)
+- Mobile menu: dropdown overlay that opens/closes
+- FormulaBar: exists, correct layout
+- SheetTabs: exists at bottom
 
 ## Requested Changes (Diff)
 
 ### Add
-- **Range selection state**: `selectionRange: { startRow, startCol, endRow, endCol } | null` in useSpreadsheet
-- **Range selection interactions** in Grid:
-  - Click+drag on desktop to select range (mousedown → mousemove → mouseup)
-  - Touch drag on mobile (touchstart → touchmove → touchend) to select range
-  - Shift+click extends selection from anchor cell
-  - Shift+Arrow keys extend selection (Shift+ArrowDown/Up/Left/Right)
-  - Ctrl+Shift+End selects to last used cell
-  - Click column/row headers to select entire column/row
-- **Visual range highlight**: cells in selection range get a blue tint background, selection border drawn around entire range (not individual cells)
-- **Fill handle** (drag-fill):
-  - Small blue square (6×6px) at bottom-right corner of selected cell (or bottom-right of range)
-  - On drag down/right: auto-fill values (increment numbers, repeat text, extend series)
-  - Touch-friendly: larger hit target (16×16px touch area) on mobile
-  - Show "ghost" preview of fill range while dragging
-- **Range formatting**: `updateRangeFormat(format)` applies to all cells in `selectionRange`
-- **Clear range**: Delete/Backspace clears all cells in the selected range
-- **Name box**: shows range address (e.g. "B2:D5") when range is selected; single cell otherwise
-- **Range copy/paste**: Ctrl+C copies range, Ctrl+V pastes at anchor
-- **Context menu** (right-click / long-press mobile): Insert row, Delete row, Insert column, Delete column, Clear cells, Copy, Paste
+- **Title Bar**: Windows-style top bar with Quick Access Toolbar (save, undo, redo icons), centered file title "Book1 - SheetPro AI", and window control buttons (minimize, maximize, close) on the right. Use Excel green (#217346) background.
+- **Ribbon Tab Bar**: Always-visible horizontal tab strip below title bar — tabs: Home, Insert, Page Layout, Formulas, Data, Review, View, AI. Active tab underlined/highlighted. Scrollable on mobile with no scrollbar.
+- **Ribbon Content Panel**: Always-visible ribbon showing buttons/groups for the active tab. Home tab shows: Clipboard group (Cut, Copy, Paste), Font group (font family select, font size, B/I/U, color), Alignment group (left/center/right, wrap text), Number group (format select), and AI button. Other tabs show relevant placeholder groups. NO toggle, NO collapse — always open like real Excel.
+- **Mobile behavior**: Title bar compact, ribbon tabs scroll horizontally, ribbon content scrolls horizontally. No hamburger menu.
 
 ### Modify
-- `useSpreadsheet.ts`: Add `selectionRange`, `setSelectionRange`, `updateRangeFormat`, `clearRange`, `copyRange`, `pasteRange` to hook return
-- `Grid.tsx`: Rewrite cell rendering to highlight range selection; add fill handle element; add drag logic for selection and fill
-- `Toolbar.tsx`: `updateCellFormat` calls replaced with `updateRangeFormat` so formatting applies to whole selection
-- `FormulaBar.tsx`: Name box shows range address when range selected
+- Remove hamburger menu and dropdown overlay entirely
+- Remove old Toolbar component usage (replaced by Ribbon)
+- Keep FormulaBar exactly as-is
+- Keep SheetTabs exactly as-is
+- App.tsx: replace header + toolbar with TitleBar + RibbonTabs + RibbonContent components
 
 ### Remove
-- Nothing removed — all Phase 1 features retained
+- `mobileMenuOpen` state and AnimatePresence mobile dropdown
+- `Menu`, `X` imports from lucide used for hamburger
+- Old `<header>` element
+- Old Toolbar component rendering (both mobile and desktop)
 
 ## Implementation Plan
-1. Extend `useSpreadsheet.ts`:
-   - Add `selectionRange` state (anchor + active corner)
-   - Add `setSelectionRange(range)` 
-   - Add `updateRangeFormat(format)` iterates all cells in range and updates
-   - Add `clearRange()` deletes all cells in range
-   - Add clipboard state + `copyRange()` / `pasteRange()` helpers
-2. Rewrite `Grid.tsx`:
-   - Track `isMouseDown` + `isDraggingFill` refs
-   - On mousedown on cell: set anchor, start selection
-   - On mousemove over cell (while down): update active corner → `setSelectionRange`
-   - On shift+click: extend range from anchor
-   - `isInRange(row, col)` helper to determine highlight
-   - Render range selection overlay (absolute positioned border) instead of per-cell border
-   - Render fill handle at bottom-right corner of selection
-   - Fill handle mousedown → track fill drag direction → apply fill on mouseup
-   - Touch equivalents using touchstart/touchmove/touchend with coordinate-to-cell mapping
-   - Column header click → select full column; row number click → select full row
-3. Update `Toolbar.tsx`: call `updateRangeFormat` instead of `updateCellFormat`
-4. Update `FormulaBar.tsx`: show range address when `selectionRange` is set
-5. Add context menu component (right-click/long-press): insert/delete row/col, clear, copy, paste
+1. Create `TitleBar.tsx` — Windows-style title bar with QAT, filename, window controls
+2. Create `Ribbon.tsx` — Ribbon with tab strip + tab content panel (Home, Insert, Page Layout, Formulas, Data, Review, View, AI tabs). Home tab has full formatting controls using existing spreadsheet hook. All buttons wired to real actions.
+3. Update `App.tsx` — Replace old header/toolbar with TitleBar + Ribbon, remove mobile menu state
+4. Update `index.css` — Add ribbon/titlebar styles
+5. Validate and deploy
